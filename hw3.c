@@ -8,7 +8,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-#define arrSz 100
+#define arrSz 500
 
 void sigint_handler(int sig)
 {
@@ -22,17 +22,19 @@ void sigtstp_handler(int sig)
 }
 int main()
 {
-    int count = 0, pos, status, stdi = dup(0), stdo = dup(1);
+    int count, pos, status = 0, stdi = dup(0), stdo = dup(1), runs = 1;
     char *arg, *filename = NULL, *redir = NULL, *arr = (char *)malloc(arrSz * sizeof(char)),
                **args = malloc(arrSz * sizeof(char *)), **args2 = malloc(arrSz * sizeof(char *));
-
+    
     signal(SIGINT, sigint_handler);
     signal(SIGTSTP, sigtstp_handler);
     do
     {
         printf("CS361 > ");
         arg = strtok(fgets(arr, arrSz, stdin), " \n");
-
+        if (strcmp(arg, "exit")==0)
+            return 0;
+        count = 0;
         while (arg != NULL)
         {
             if (strcmp(arg, "<") == 0 || strcmp(arg, ">") == 0)
@@ -53,25 +55,33 @@ int main()
                     arg = strtok(NULL, " \n");
                 }
             }
+            else if (strcmp(arg, "exit") == 0)
+            {
+                runs = 0;
+            }
             else
             {
                 args[count++] = arg;
                 arg = strtok(NULL, " \n");
             }
         }
- 
+
         pid_t pid = fork();
 
         if (pid > 0)
         {
-            waitpid(pid, &status, WUNTRACED);
+            wait(NULL);
             if (strcmp(redir, ";") == 0)
             {
                 pid_t pid2 = fork();
                 if (pid2 == 0)
                     execvp(args2[0], args2);
                 else if (pid2 > 0)
-                    waitpid(pid, &status, WUNTRACED);
+                {
+                    wait(NULL);
+                    printf("pid:%d status:%d\n", pid2, status);
+                }
+
                 else
                 {
                     perror("fork() error");
@@ -90,20 +100,20 @@ int main()
         {
             if (strcmp(redir, ">") == 0)
             {
-                dup2(stdo, 1);
+                //dup2(stdo, 1);
                 dup2(open(filename, O_WRONLY | O_CREAT | O_TRUNC, S_IWOTH), 1);
-                execvp(args[0], args);
             }
 
             else if (strcmp(redir, "<") == 0)
             {
-                dup2(stdi, 0);
+                //dup2(stdi, 0);
                 dup2(open(filename, O_RDONLY, S_IROTH), 0);
-                execvp(args[0], args);
             }
             execvp(args[0], args);
         }
-    } while (strcmp(args[0], "exit"));
-
+    } while (1);
+    free(args);
+    free(args2);
+    free(arr);
     return 0;
 }
