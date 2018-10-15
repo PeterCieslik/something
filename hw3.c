@@ -22,7 +22,7 @@ void sigtstp_handler(int sig)
 }
 int main()
 {
-    int count, pos, status = 0, stdi = dup(0), stdo = dup(1), runs = 1;
+    int count, pos, status, stdi = dup(0), stdo = dup(1), runs = 1;
     char *arg, *filename = NULL, *redir = NULL, *arr = (char *)malloc(arrSz * sizeof(char)),
                **args = malloc(arrSz * sizeof(char *)), **args2 = malloc(arrSz * sizeof(char *));
     
@@ -70,7 +70,8 @@ int main()
 
         if (pid > 0)
         {
-            wait(NULL);
+            //wait(NULL);
+            waitpid(pid, &status, 0);
             if (strcmp(redir, ";") == 0)
             {
                 pid_t pid2 = fork();
@@ -78,7 +79,8 @@ int main()
                     execvp(args2[0], args2);
                 else if (pid2 > 0)
                 {
-                    wait(NULL);
+                    waitpid(pid, &status, 0);
+                    //wait(NULL);
                     printf("pid:%d status:%d\n", pid2, status);
                 }
 
