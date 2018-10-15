@@ -59,11 +59,7 @@ int main()
                 arg = strtok(NULL, " \n");
             }
         }
-        /*
-        for(int i =  0; i< count; i++)
-        {
-            printf("%s\n", args[i]);
-        }*/
+ 
         pid_t pid = fork();
 
         if (pid > 0)
@@ -75,7 +71,7 @@ int main()
                 if (pid2 == 0)
                     execvp(args2[0], args2);
                 else if (pid2 > 0)
-                    wait(NULL);
+                    waitpid(pid, &status, WUNTRACED);
                 else
                 {
                     perror("fork() error");
