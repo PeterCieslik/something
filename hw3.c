@@ -50,7 +50,6 @@ int main()
                 redir = arg;
                 arg = strtok(NULL, " \n");
                 filename = arg;
-                puts(filename);
                 arg = NULL;
             }
             else if (strcmp(arg, ";") == 0)
@@ -87,7 +86,7 @@ int main()
                 else if (pid2 > 0)
                 {
                     wait(NULL);
-                    printf("pid:%d status:%d\n", pid2, status);
+                    printf("\npid:%d status:%d\n", pid2, status);
                 }
 
                 else
@@ -96,7 +95,7 @@ int main()
                     exit(-1);
                 }
             }
-            printf("pid:%d status:%d\n", pid, status);
+            printf("\npid:%d status:%d\n", pid, status);
         }
         else if (pid < 0)
         {
