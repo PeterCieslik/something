@@ -107,13 +107,15 @@ int main()
         {
             if (strcmp(redir, ">") == 0)
             {
-                dup2(open(filename, O_WRONLY | O_CREAT | O_TRUNC, S_IWOTH), 1);
+                dup2(stdo, 1);
+                dup2(open(filename, O_WRONLY | O_CREAT | O_TRUNC, S_IRWXU|S_IRWXG|S_IRWXO), 1);
                 execvp(args[0], args);
             }
 
             else if (strcmp(redir, "<") == 0)
             {
-                dup2(open(filename, O_RDONLY, S_IROTH), 0);
+                dup2(stdi, 0);
+                dup2(open(filename, O_RDONLY, S_IRWXU|S_IRWXG|S_IRWXO), 0);
                 execvp(args[0], args);
             }
             execvp(args[0], args);
