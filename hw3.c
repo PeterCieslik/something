@@ -97,7 +97,8 @@ int main(int argc, char **argv)
 
         if (pid > 0)
         {
-            wait(NULL); //waitpid(pid, &status, WNOHANG);
+            //wait(NULL); 
+            waitpid(pid, &status, 0);
             if (semicolon)
             {
                 pid_t pid2 = fork();
@@ -105,8 +106,9 @@ int main(int argc, char **argv)
                     execvp(args2[0], args2);
                 else if (pid2 > 0)
                 {
-                    wait(NULL);
-                    printf("pid:%d status:%d", pid2, 0);
+                    //wait(NULL);
+                    waitpid(pid2, &status, 0);
+                    printf("pid:%d status:%d", pid2, WEXITSTATUS(status));
                 }
 
                 else
@@ -114,7 +116,7 @@ int main(int argc, char **argv)
                     exit(-1);
                 }
             }
-            printf("pid:%d status:%d", pid, 0);
+            printf("pid:%d status:%d", pid, WEXITSTATUS(status));
         }
         else if (pid < 0)
         {
