@@ -97,7 +97,7 @@ int main()
 
         if (pid > 0)
         {
-            waitpid(pid, &status, WUNTRACED);
+            wait(NULL);
             if (semicolon)
             {
                 printf("redirection active");
@@ -106,8 +106,8 @@ int main()
                     execvp(args2[0], args2);
                 else if (pid2 > 0)
                 {
-                    waitpid(pid, &status, WUNTRACED);
-                    printf("\npid:%d status:%d\n", pid2, status);
+                    wait(NULL);
+                    printf("pid:%d status:%d\n", pid2, status);
                 }
 
                 else
