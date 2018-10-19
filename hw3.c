@@ -108,7 +108,7 @@ int main(int argc, char **argv)
                 {
                     //wait(NULL);
                     waitpid(pid2, &status, 0);
-                    printf("pid:%d status:%d", pid2, WEXITSTATUS(status));
+                    //printf("pid:%d status:%d", pid2, WEXITSTATUS(status));
                 }
 
                 else
