@@ -40,8 +40,8 @@ int main()
         arg = strtok(fgets(arr, arrSz, stdin), " \n");
         if (strcmp(arg, "exit") == 0)
             return 0;
-        dup2(stdo, 1);
-        dup2(stdi, 0);
+        //dup2(stdo, 1);
+        //dup2(stdi, 0);
         count = 0;
         while (arg != NULL)
         {
@@ -97,7 +97,7 @@ int main()
 
         if (pid > 0)
         {
-            wait(NULL);
+            waitpid(pid, &status, WUNTRACED);
             if (semicolon)
             {
                 printf("redirection active");
@@ -106,7 +106,7 @@ int main()
                     execvp(args2[0], args2);
                 else if (pid2 > 0)
                 {
-                    wait(NULL);
+                    waitpid(pid, &status, WUNTRACED);
                     printf("\npid:%d status:%d\n", pid2, status);
                 }
 
@@ -128,13 +128,13 @@ int main()
         {
             if (redir1)
             {
-                dup2(stdo, 1);
+                //dup2(stdo, 1);
                 dup2(open(filename, O_WRONLY | O_CREAT | O_TRUNC, S_IRWXU | S_IRWXG | S_IRWXO), 1);
             }
 
             else if (redir2) //strcmp(redir, "<") == 0
             {
-                dup2(stdi, 0);
+                //dup2(stdi, 0);
                 dup2(open(filename, O_RDONLY, S_IRWXU | S_IRWXG | S_IRWXO), 0);
             }
             execvp(args[0], args);
