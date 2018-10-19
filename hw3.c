@@ -20,7 +20,7 @@ void sigtstp_handler(int sig)
     char msg[] = "caught sigstp\nCS361 >";
     write(1, msg, sizeof(msg));
 }
-int main()
+int main(int argc, char **argv)
 {
     int count, pos, status = 0, stdi = dup(0), stdo = dup(1), runs = 1, semicolon = 0, redir1 = 0, redir2 = 0;
     char *arg, *filename = NULL, *redir = NULL, *arr = (char *)malloc(arrSz * sizeof(char)),
@@ -100,14 +100,13 @@ int main()
             wait(NULL);
             if (semicolon)
             {
-                printf("redirection active");
                 pid_t pid2 = fork();
                 if (pid2 == 0)
                     execvp(args2[0], args2);
                 else if (pid2 > 0)
                 {
                     wait(NULL);
-                    printf("pid:%d status:%d\n", pid2, status);
+                    printf("pid:%d status:%d", pid2, status);
                 }
 
                 else
@@ -116,7 +115,7 @@ int main()
                     exit(-1);
                 }
             }
-            printf("\npid:%d status:%d\n", pid, status);
+            printf("\npid:%d status:%d", pid, status);
         }
         else if (pid < 0)
         {
